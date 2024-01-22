@@ -14,7 +14,7 @@
   <link href="{{ asset('/css/app.css') }}" rel="stylesheet" />
 
   <!-- Marcador donde incluiremos el título de la página. El primer parámetro (title) contiene el identificador y el segundo (Tienda online) contiene el valor por defecto que se usará en caso de que no se le asigne ningún valor al marcador-->
-  <title>@yield('title', 'Tienda online')</title>   
+  <title>@yield('title', 'Tienda online')</title>
 
 </head>
 
@@ -23,13 +23,13 @@
   <nav class="navbar navbar-expand-lg navbar-dark bg-secondary py-4">
     <div class="container">
       <a class="navbar-brand" href="#">Tienda online</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
-        aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav ms-auto">
           <a class="nav-link active" href="{{ route('home.index') }}">Inicio</a>
+          <a class="nav-link active" href="{{ route('products.index') }}">Productos</a>
           <a class="nav-link active" href="{{ route('home.about') }}">Acerca de</a>
         </div>
       </div>
