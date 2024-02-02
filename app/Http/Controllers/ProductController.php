@@ -4,79 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Storage;
+
+use App\Models\Product;
+
 class ProductController extends Controller
 {
-    private $productos = [
-        [
-            'id' => 1,
-            'nombre' => 'TV',
-            'descripcion' => 'Descripción del Producto 1',
-            'precio' => 19.99,
-            'img' => "/img/game.png"
-        ],
-        [
-            'id' => 2,
-            'nombre' => 'Iphone',
-            'descripcion' => 'Descripción del Producto 2',
-            'precio' => 29.99,
-            'img' => "/img/safe.png"
-        ],
-        [
-            'id' => 3,
-            'nombre' => 'Chromecast',
-            'descripcion' => 'Descripción del Producto 3',
-            'precio' => 39.99,
-            'img' => "/img/submarine.png"
-        ],
-        [
-            'id' => 4,
-            'nombre' => 'Xbox',
-            'descripcion' => 'Descripción del Producto 4',
-            'precio' => 49.99,
-            'img' => "/img/game.png"
-        ],
-        [
-            'id' => 5,
-            'nombre' => 'Playstation',
-            'descripcion' => 'Descripción del Producto 5',
-            'precio' => 59.99,
-            'img' => "/img/safe.png"
-        ],
-        [
-            'id' => 6,
-            'nombre' => 'Nintendo',
-            'descripcion' => 'Descripción del Producto 6',
-            'precio' => 69.99,
-            'img' => "/img/submarine.png"
-        ],
-        [
-            'id' => 7,
-            'nombre' => 'Laptop',
-            'descripcion' => 'Descripción del Producto 7',
-            'precio' => 79.99,
-            'img' => "/img/safe.png"
-        ],
-        [
-            'id' => 8,
-            'nombre' => 'Monitor',
-            'descripcion' => 'Descripción del Producto 8',
-            'precio' => 89.99,
-            'img' => "/img/game.png"
-        ],
-        [
-            'id' => 9,
-            'nombre' => 'Mouse',
-            'descripcion' => 'Descripción del Producto 9',
-            'precio' => 99.99,
-            'img' => "/img/submarine.png"
-        ],
-    ];
-
     public function index()
     {
         $viewData = [];
         $viewData["title"] = "Productos - Tienda online";
-        $viewData["productos"] = $this->productos;
+        $viewData["productos"] = $this->getAllProducts();
         return view("products.index")->with("viewData", $viewData);
     }
 
@@ -84,7 +22,61 @@ class ProductController extends Controller
     {
         $viewData = [];
         $viewData["title"] = "Productos - Tienda online";
-        $viewData["producto"] = $this->productos[$id - 1];
+        $viewData["producto"] = $this->getProductById($id);
         return view("products.edit")->with("viewData", $viewData);
+    }
+
+
+    public function new(Request $request)
+    {
+        $rules = [
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric',
+            'description' => 'string',
+            'image' => 'required|image|mimes:jpeg,png',
+        ];
+
+        $request->validate($rules);
+        $product = new Product();
+        $product->name = $request->input('name');
+        $product->precio = $request->input('price');
+        $product->description = $request->input('description');
+        $product->save();
+
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+
+            $originalName = $file->getClientOriginalName();
+
+            $fileName = $product->id . "_" . $originalName;
+
+            Storage::disk('public')->put($fileName, file_get_contents($file));
+
+            $product->url = $product->id . '_' . $fileName;
+
+            $product->save();
+
+            return "Producto creado";
+        }
+    }
+
+
+
+
+
+    public function create()
+    {
+        return view("products.create");
+    }
+
+    private function getAllProducts()
+    {
+        return Product::all();
+    }
+
+    private function getProductById($id)
+    {
+        // Use the Product model to fetch a product by its ID from the database
+        return Product::find($id);
     }
 }
