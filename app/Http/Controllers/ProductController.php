@@ -52,11 +52,11 @@ class ProductController extends Controller
 
             Storage::disk('public')->put($fileName, file_get_contents($file));
 
-            $product->url = $product->id . '_' . $fileName;
+            $product->url =  $fileName;
 
             $product->save();
 
-            return "Producto creado";
+            return redirect()->action('App\Http\Controllers\ProductController@index');
         }
     }
 

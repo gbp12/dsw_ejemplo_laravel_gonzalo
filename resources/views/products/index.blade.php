@@ -12,7 +12,9 @@
     @foreach ($viewData['productos'] as $producto)
     <div class="col-md-6 col-lg-4 mb-2">
         <a style="text-decoration: none;" href="/products/{{$producto['id']}}">
-            <img src="{{ url('img/' . $producto['url']) }}" class="img-fluid rounded">
+            <img src="{{ asset('storage/' . $producto['url']) }}" class="img-fluid rounded">
+
+
             <h4 style="color: #242424;" class="text-center">{{$producto['name']}}</h4>
             <h4 style="color: #242424;" class="text-center">{{$producto['precio']}}</h4>
             <h4 style="color: #242424;" class="text-center">{{$producto['url']}}</h4>
