@@ -45,8 +45,8 @@ class ProductController extends Controller
 
 
         $request->validate($rules);
-        $product = $this->getProductById($id);
-        if ($request["deleteImage"] == true) {
+        $product = Product::find($id);
+        if ($request["deleteImage"]) {
             Storage::disk('public')->delete($product->url);
             $product->url = "";
             $product->save();
