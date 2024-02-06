@@ -6,7 +6,7 @@
 <!-- Inyectamos el texto con el contenido de la página en el yield "content" -->
 @section('content')
 
-<h1>hola este es mi formulario</h1>
+<h1>Formulario de creacion de productos</h1>
 <form method="POST" action="/products" enctype="multipart/form-data">
     @csrf
     <div class="form-group">

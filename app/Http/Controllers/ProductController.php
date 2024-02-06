@@ -18,12 +18,59 @@ class ProductController extends Controller
         return view("products.index")->with("viewData", $viewData);
     }
 
+    public function show($id)
+    {
+        $viewData = [];
+        $viewData["title"] = "Productos - Tienda online";
+        $viewData["producto"] = $this->getProductById($id);
+        return view("products.show")->with("viewData", $viewData);
+    }
+
     public function edit($id)
     {
         $viewData = [];
         $viewData["title"] = "Productos - Tienda online";
         $viewData["producto"] = $this->getProductById($id);
         return view("products.edit")->with("viewData", $viewData);
+    }
+
+
+    public function update(Request $request, $id)
+    {
+        $rules = [
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric',
+            'description' => 'string',
+        ];
+
+
+        $request->validate($rules);
+        $product = $this->getProductById($id);
+        if ($request["deleteImage"] == true) {
+            Storage::disk('public')->delete($product->url);
+            $product->url = "";
+            $product->save();
+        }
+        $product->name = $request->input('name');
+        $product->precio = $request->input('price');
+        $product->description = $request->input('description');
+        $product->save();
+
+
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+
+            $originalName = $file->getClientOriginalName();
+
+            $fileName = $product->id . "_" . $originalName;
+
+            Storage::disk('public')->put($fileName, file_get_contents($file));
+
+            $product->url =  $fileName;
+
+            $product->save();
+        }
+        return redirect()->action('App\Http\Controllers\ProductController@index');
     }
 
 
@@ -67,6 +114,13 @@ class ProductController extends Controller
     public function create()
     {
         return view("products.create");
+    }
+
+    public function destroy($id)
+    {
+        $product = $this->getProductById($id);
+        $product->delete();
+        return redirect()->action('App\Http\Controllers\ProductController@index');
     }
 
     private function getAllProducts()
